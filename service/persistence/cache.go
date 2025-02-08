@@ -17,6 +17,14 @@ func InitRedis(host string, port int) {
 	rdb = redis.NewClient(&redis.Options{
 		Addr: address,
 	})
+
+	// test connection
+	_, err := rdb.Ping(context.Background()).Result()
+	if err != nil {
+		log.Fatalf("Could not connect to Redis: %v", err)
+	} else {
+		log.Printf("Successfully connected to Redis on: %v", port)
+	}
 }
 
 func AddUniqueRequest(id string) error {
