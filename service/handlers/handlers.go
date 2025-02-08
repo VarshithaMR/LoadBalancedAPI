@@ -39,7 +39,7 @@ func AcceptRequest(w http.ResponseWriter, r *http.Request) {
 }
 
 func SendPostRequest(endpoint string, count int) error {
-	url := fmt.Sprintf("%s?count=%d", endpoint, count)
+	url := fmt.Sprintf("http://localhost:8080/%s?count=%d", endpoint, count)
 	resp, err := http.Post(url, "application/json", nil)
 	if err != nil {
 		log.Printf("Failed to send POST request: %v", err)

@@ -29,14 +29,23 @@ func InitRedis(host string, port int) {
 
 func AddUniqueRequest(id string) error {
 	_, err := rdb.SAdd(context.Background(), redisKey, id).Result()
+	if err == nil {
+		log.Printf("Added unique id to redis: %v", id)
+	}
+	members, err := rdb.SMembers(context.Background(), redisKey).Result()
+	if err != nil {
+		log.Printf("Error fetching Redis set members: %v", err)
+	}
+	log.Printf("Current Redis set members: %v", members)
 	return err
 }
 
 func GetRedisUniqueCount() int {
-	redisCount, err := rdb.SCard(context.Background(), "unique_requests").Result()
+	redisCount, err := rdb.SCard(context.Background(), redisKey).Result()
 	if err != nil {
 		log.Printf("Error getting Redis unique request count: %v", err)
 		redisCount = 0
 	}
+	log.Printf("Redis Unique count: %v", int(redisCount))
 	return int(redisCount)
 }
