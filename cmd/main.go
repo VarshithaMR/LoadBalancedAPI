@@ -7,6 +7,7 @@ import (
 
 	"LoadBalancedAPI/cmd/config"
 	"LoadBalancedAPI/service/handlers"
+	"LoadBalancedAPI/service/persistence"
 )
 
 func main() {
@@ -15,6 +16,7 @@ func main() {
 		log.Fatalf("Error loading config: %v", err)
 	}
 
+	persistence.InitRedis(configuration.Host, configuration.RedisPort)
 	handlers.SetRoutes()
 
 	// Start the server on port 8080

@@ -7,8 +7,9 @@ import (
 )
 
 type ServerConfig struct {
-	Host string `yaml:"host"`
-	Port string `yaml:"port"`
+	Host      string `yaml:"host"`
+	Port      string `yaml:"port"`
+	RedisPort string `yaml:"redis-port"`
 }
 
 func LoadConfig(filePath string) (*ServerConfig, error) {
