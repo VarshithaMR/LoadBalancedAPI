@@ -6,11 +6,14 @@ import (
 	"net/http"
 
 	"LoadBalancedAPI/cmd/config"
+	"LoadBalancedAPI/service"
 	"LoadBalancedAPI/service/handlers"
 	"LoadBalancedAPI/service/persistence"
 )
 
 func main() {
+	//Log unique requests count every minute
+	go service.LogUniqueRequestsEveryMinute()
 	configuration, err := config.LoadConfig("env/properties.yaml")
 	if err != nil {
 		log.Fatalf("Error loading config: %v", err)

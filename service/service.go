@@ -3,6 +3,7 @@ package service
 import (
 	"log"
 	"sync"
+	"time"
 
 	"LoadBalancedAPI/service/persistence"
 )
@@ -34,4 +35,18 @@ func GetUniqueRequestCount(uniqueRequestsCount int) int {
 
 	// max of both counts
 	return max(inMemoryCount, redisCount)
+}
+
+func LogUniqueRequestsEveryMinute() {
+	// setting up the ticker
+	ticker := time.NewTicker(1 * time.Minute)
+	defer ticker.Stop()
+
+	for {
+		<-ticker.C
+		mu.Lock()
+		count := len(uniqueRequests)
+		log.Printf("Unique requests in the last minute: %d", count)
+		mu.Unlock()
+	}
 }
