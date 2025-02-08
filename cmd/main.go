@@ -1,4 +1,4 @@
-package cmd
+package main
 
 import (
 	"fmt"
@@ -18,7 +18,7 @@ func main() {
 
 	// Start the server on port 8080
 	log.Printf("Starting server on :%s", configuration.Port)
-	if err := http.ListenAndServe(fmt.Sprintf("%s:%s", configuration.Host, configuration.Port), nil); err != nil {
-		fmt.Println("Error starting server:", err)
+	if err = http.ListenAndServe(fmt.Sprintf("%s:%s", configuration.Host, configuration.Port), nil); err != nil {
+		log.Fatalf("Error starting server: %v", err)
 	}
 }
