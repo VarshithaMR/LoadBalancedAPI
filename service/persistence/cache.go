@@ -4,19 +4,26 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"sync"
 
 	"github.com/go-redis/redis/v8"
 )
 
-var rdb *redis.Client
+var (
+	rdb  *redis.Client
+	once sync.Once
+)
 
 const redisKey = "unique_requests"
 
 func InitRedis(host string, port int) {
 	address := fmt.Sprintf("%s:%d", host, port)
-	rdb = redis.NewClient(&redis.Options{
-		Addr: address,
-	})
+	once.Do(
+		func() {
+			rdb = redis.NewClient(&redis.Options{
+				Addr: address,
+			})
+		})
 
 	// test connection
 	_, err := rdb.Ping(context.Background()).Result()
