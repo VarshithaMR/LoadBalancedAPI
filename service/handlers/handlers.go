@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+
+	"LoadBalancedAPI/service"
 )
 
 func SetRoutes() {
@@ -15,9 +17,16 @@ func AcceptRequest(w http.ResponseWriter, r *http.Request) {
 	id := r.URL.Query().Get("id")
 	endpoint := r.URL.Query().Get("endpoint")
 
+	uniqueRequestCount := service.TrackUniqueRequest(id)
+
 	// Send HTTP POST request if an endpoint is provided
 	if endpoint != "" {
-		SendPostRequest(endpoint, id)
+		err := SendPostRequest(endpoint, uniqueRequestCount)
+		if err != nil {
+			log.Printf("Error sending POST request: %v", err)
+			http.Error(w, "Failed to send POST request", http.StatusInternalServerError)
+			return
+		}
 	}
 
 	// Respond with success
@@ -25,14 +34,15 @@ func AcceptRequest(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
-func SendPostRequest(endpoint, id string) {
-	url := fmt.Sprintf("%s?unique_id=%s", endpoint, id)
+func SendPostRequest(endpoint string, count int) error {
+	url := fmt.Sprintf("%s?count=%d", endpoint, count)
 	resp, err := http.Post(url, "application/json", nil)
 	if err != nil {
 		log.Printf("Failed to send POST request: %v", err)
-		return
+		return err
 	}
 	defer resp.Body.Close()
 
 	log.Printf("POST request to %s with status code %d", endpoint, resp.StatusCode)
+	return nil
 }

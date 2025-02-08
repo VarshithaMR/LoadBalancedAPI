@@ -14,6 +14,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("Error loading config: %v", err)
 	}
+
 	handlers.SetRoutes()
 
 	// Start the server on port 8080
