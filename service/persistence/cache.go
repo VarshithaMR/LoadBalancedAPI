@@ -12,8 +12,8 @@ var rdb *redis.Client
 
 const redisKey = "unique_requests"
 
-func InitRedis(host, port string) {
-	address := fmt.Sprintf("%s:%s", host, port)
+func InitRedis(host string, port int) {
+	address := fmt.Sprintf("%s:%d", host, port)
 	rdb = redis.NewClient(&redis.Options{
 		Addr: address,
 	})

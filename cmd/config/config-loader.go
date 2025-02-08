@@ -7,12 +7,16 @@ import (
 )
 
 type ServerConfig struct {
-	Host      string `yaml:"host"`
-	Port      string `yaml:"port"`
-	RedisPort string `yaml:"redis-port"`
+	Server Config `yaml:"server"`
 }
 
-func LoadConfig(filePath string) (*ServerConfig, error) {
+type Config struct {
+	Host      string `yaml:"host"`
+	Port      int    `yaml:"port"`
+	RedisPort int    `yaml:"redis-port"`
+}
+
+func LoadConfig(filePath string) (*Config, error) {
 	file, err := os.Open(filePath)
 	if err != nil {
 		return nil, fmt.Errorf("failed to open config file: %v", err)
@@ -31,5 +35,5 @@ func LoadConfig(filePath string) (*ServerConfig, error) {
 		return nil, fmt.Errorf("failed to parse config file: %v", err)
 	}
 
-	return &config, nil
+	return &config.Server, nil
 }
