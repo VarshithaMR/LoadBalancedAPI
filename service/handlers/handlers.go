@@ -15,9 +15,12 @@ func SetRoutes() {
 func AcceptRequest(w http.ResponseWriter, r *http.Request) {
 	// Get query params
 	id := r.URL.Query().Get("id")
-	endpoint := r.URL.Query().Get("endpoint")
+	if id == "" {
+		http.Error(w, "ID parameter is required", http.StatusBadRequest)
+	}
 
 	uniqueRequestCount := service.TrackUniqueRequest(id)
+	endpoint := r.URL.Query().Get("endpoint")
 
 	// Send HTTP POST request if an endpoint is provided
 	if endpoint != "" {
