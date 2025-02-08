@@ -25,12 +25,14 @@ func AcceptRequest(w http.ResponseWriter, r *http.Request) {
 	// Send HTTP POST request if an endpoint is provided
 	if endpoint != "" {
 		count := service.GetUniqueRequestCount(uniqueRequestCount)
-		err := SendPostRequest(endpoint, count)
-		if err != nil {
-			log.Printf("Error sending POST request: %v", err)
-			http.Error(w, "Failed to send POST request", http.StatusInternalServerError)
-			return
-		}
+		go func() {
+			err := SendPostRequest(endpoint, count)
+			if err != nil {
+				log.Printf("Error sending POST request: %v", err)
+				http.Error(w, "Failed to send POST request", http.StatusInternalServerError)
+				return
+			}
+		}()
 	}
 
 	// Respond with success
